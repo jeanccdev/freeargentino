@@ -21,17 +21,19 @@ app.use('/api', routes)
 app.all('*', (req, res) => res.send('Route undefined'))
 
 // Run
-sequelize.sync({ force: true })
+sequelize.sync({
+    //  force: true 
+})
 .then(async () => {
-    const password = await bcrypt.hash('admin', 8)
-    const employee = {
-        username: 'admin',
-        password: password,
-        name: 'Administrador',
-        role: 'Admin',
-        verified: true
-    }
-    await Employee.create(employee)
+    // const password = await bcrypt.hash('admin', 8)
+    // const employee = {
+    //     username: 'admin',
+    //     password: password,
+    //     name: 'Administrador',
+    //     role: 'Admin',
+    //     verified: true
+    // }
+    // await Employee.create(employee)
     app.listen(port, () => {
         console.clear()
         console.log(`Server running on http://localhost:${port}`)
