@@ -14,18 +14,7 @@ const port = process.env.PORT
 // Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({
-    origin: 'https://oftalmoreact.000webhostapp.com',
-    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
-}))
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "https://oftalmoreact.000webhostapp.com")
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    )
-    next()
-})
+app.use(cors())
 
 // Controllers
 app.use('/api', routes)
