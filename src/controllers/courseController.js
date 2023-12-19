@@ -5,6 +5,16 @@ const courseGetAll = async (req, res) => {
     courses.length > 0 ? res.status(200).send(courses) : res.status(404).send({ message: 'No course found' })
 }
 
+const courseGetCourses = async (req, res) => {
+    const { id } = req.params
+    const courses = await Course.findAll({
+        where: {
+            studentId: id
+        }
+    })
+    courses.length > 0 ? res.status(200).send(courses) : res.status(404).send(false)
+}
+
 const courseGetOne = async (req, res) => {
     const { id } = req.params
     const course = await Course.findByPk(id)
@@ -33,4 +43,4 @@ const courseDeleteOne = async (req, res) => {
     res.send(course)
 }
 
-export { courseDeleteOne, courseGetAll, courseGetOne, courseInsertOne, coursePatchOne }
+export { courseDeleteOne, courseGetAll, courseGetOne, courseInsertOne, coursePatchOne, courseGetCourses }
