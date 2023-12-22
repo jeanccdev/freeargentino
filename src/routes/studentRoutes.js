@@ -4,12 +4,12 @@ import { studentDeleteOne, studentGetAll, studentGetCpf, studentGetId, studentGe
 
 const router = express.Router()
 
-router.get('/getAll', studentGetAll)
-router.get('/getOne/:id', studentGetOne)
+router.get('/getAll', authenticateToken, studentGetAll)
+router.get('/getOne/:id', authenticateToken, studentGetOne)
 router.get('/getId/:id', studentGetId)
 router.get('/getCpf/:cpf', studentGetCpf)
-router.post('/insertOne', studentInsertOne)
-router.patch('/patchOne/:id', studentPatchOne)
-router.delete('/deleteOne/:id', studentDeleteOne)
+router.post('/insertOne', authenticateToken, studentInsertOne)
+router.patch('/patchOne/:id', authenticateToken, studentPatchOne)
+router.delete('/deleteOne/:id', authenticateToken, studentDeleteOne)
 
 export default router

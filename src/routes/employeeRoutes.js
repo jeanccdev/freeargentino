@@ -4,9 +4,9 @@ import { employeeDeleteOne, employeeGetAll, employeeGetOne, employeePatchOne } f
 
 const router = express.Router()
 
-router.get('/getAll', employeeGetAll)
-router.get('/getOne/:id', employeeGetOne)
-router.patch('/patchOne/:id', employeePatchOne)
-router.delete('/deleteOne/:id', employeeDeleteOne)
+router.get('/getAll', authenticateToken, employeeGetAll)
+router.get('/getOne/:id', authenticateToken, employeeGetOne)
+router.patch('/patchOne/:id', authenticateToken, employeePatchOne)
+router.delete('/deleteOne/:id', authenticateToken, employeeDeleteOne)
 
 export default router

@@ -6,11 +6,11 @@ import { documentDeleteOne, documentGetAll, documentGetDocuments, documentGetOne
 const router = express.Router()
 const upload = multer()
 
-router.get('/getAll', documentGetAll)
+router.get('/getAll', authenticateToken, documentGetAll)
 router.get('/getDocuments/:id', documentGetDocuments)
-router.get('/getOne/:id', documentGetOne)
-router.post('/insertOne', upload.single('pdf'), documentInsertOne)
-router.patch('/patchOne/:id', upload.single('pdf'), documentPatchOne)
-router.delete('/deleteOne/:id', documentDeleteOne)
+router.get('/getOne/:id', authenticateToken, documentGetOne)
+router.post('/insertOne', authenticateToken, upload.single('pdf'), documentInsertOne)
+router.patch('/patchOne/:id', authenticateToken, upload.single('pdf'), documentPatchOne)
+router.delete('/deleteOne/:id', authenticateToken, documentDeleteOne)
 
 export default router

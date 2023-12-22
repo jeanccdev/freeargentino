@@ -1,11 +1,15 @@
 import Course from '../models/course.js'
+import express from 'express'
+import authenticateToken from '../services/authenticateToken.js'
 
-const courseGetAll = async (req, res) => {
+const router = express.Router()
+
+router.get('/getAll', authenticateToken, async (req, res) => {
     const courses = await Course.findAll()
     courses.length > 0 ? res.status(200).send(courses) : res.status(404).send({ message: 'No course found' })
-}
+})
 
-const courseGetCourses = async (req, res) => {
+router.get('/getCourses/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const courses = await Course.findAll({
         where: {
@@ -13,34 +17,34 @@ const courseGetCourses = async (req, res) => {
         }
     })
     courses.length > 0 ? res.status(200).send(courses) : res.status(404).send(false)
-}
+})
 
-const courseGetOne = async (req, res) => {
+router.get('/getOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const course = await Course.findByPk(id)
     course ? res.status(200).send(course) : res.status(404).send({ message: 'Course not found' })
-}
+})
 
-const courseInsertOne = async (req, res) => {
+router.post('/insertOne', authenticateToken, async (req, res) => {
     const data = req.body
     const course = await Course.create(data)
     course ? res.status(201).send(course) : res.status(400).send({ message: 'Course not created' })
-}
+})
 
-const coursePatchOne = async (req, res) => {
+router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
     const { id } = req.params
     const course = await Course.findByPk(id)
     course.set(data)
     await course.save()
     res.send(course)
-}
+})
 
-const courseDeleteOne = async (req, res) => {
+router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const course = await Course.findByPk(id)
     await course.destroy()
     res.send(course)
-}
+})
 
-export { courseDeleteOne, courseGetAll, courseGetOne, courseInsertOne, coursePatchOne, courseGetCourses }
+export default router
