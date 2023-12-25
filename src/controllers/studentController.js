@@ -51,7 +51,7 @@ router.get('/getCpf/:cpf', async (req, res) => {
                 res.status(200).send({ student: student, token: token })
             })
     } catch (error) {
-        res.status(404).send({ msg: error })
+        res.status(404).send({ response: false, error: error })
     }
 })
 
