@@ -45,10 +45,10 @@ router.get('/getCpf/:cpf', async (req, res) => {
             cpf: cpf
         }
     })
-    res.send(student)
+    // res.send(student)
 
-    // const token = generateToken({ cpf: student.cpf, name: student.firstName })
-    //         res.status(200).send({ student: student, token: token })
+    const token = generateToken({ cpf: student.cpf, name: student.firstName })
+    res.status(200).send({ student: student, token: token })
 })
 
 router.post('/insertOne', authenticateToken, async (req, res) => {
