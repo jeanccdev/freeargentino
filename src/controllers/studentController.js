@@ -38,6 +38,16 @@ router.get('/getId/:id', authenticateToken, async (req, res) => {
     student ? res.status(200).send(student) : res.status(404).send(false)
 })
 
+router.get('/getPublicId/:id', async (req, res) => {
+    const { id } = req.params
+    const student = await Student.findOne({
+        where: {
+            id: id
+        }
+    })
+    student ? res.status(200).send(student) : res.status(404).send(false)
+})
+
 router.get('/getCpf/:cpf', async (req, res) => {
     const { cpf } = req.params
     const student = await Student.findOne({
