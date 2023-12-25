@@ -17,19 +17,11 @@ const port = process.env.PORT
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: 'https://faetos.com.br',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }))
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "https://faetos.com.br");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    )
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    next()
-})
 
 // Controllers
 app.use('/api', routes)
