@@ -40,13 +40,14 @@ router.get('/getId/:id', authenticateToken, async (req, res) => {
 
 router.get('/getCpf/:cpf', async (req, res) => {
     const { cpf } = req.params
-    const student = await Student.findOne({
+    let student = await Student.findOne({
         where: {
             cpf: cpf
         }
     })
-    const token = generateToken({ cpf: student.cpf, name: student.firstName })
-    res.send({ student: student, token: token })
+    student.token = generateToken({ cpf: student.cpf, name: student.firstName })
+    // const token = generateToken({ cpf: student.cpf, name: student.firstName })
+    res.send(student)
 })
 
 router.post('/insertOne', authenticateToken, async (req, res) => {
