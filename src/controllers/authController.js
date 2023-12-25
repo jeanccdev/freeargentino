@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     if (employee) {
         const passwordMatched = await bcrypt.compare(password, employee.password)
         if (passwordMatched) {
-            const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, process.env.SECRET)
+            const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, 'secret')
             res.send({ token: token, employee: employee })
         } else {
             res.send(false)
@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
         password = await bcrypt.hash(password, 8)
         const employee = await Employee.create({ username, password, name })
         employee ? await Log.create({ type: 'Cadastro Parceiro', description: `Realizado cadastro de ${employee.name}`, employeeId: employee.id }) : null
-        const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, process.env.SECRET)
+        const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, 'secret')
         res.send({ token: token, employee: employee })
     } else {
         res.send({ message: "Usuário já existente" })
@@ -55,7 +55,7 @@ router.get('/authenticateToken/:token', (req, res) => {
 
     if (token == null) { return res.status(401).send(false) }
 
-    const authenticated = jwt.verify(token, process.env.SECRET, (err, user) => {
+    const authenticated = jwt.verify(token, 'secret', (err, user) => {
         if (err) return res.status(403).send(false)
         return true
     })
@@ -64,8 +64,13 @@ router.get('/authenticateToken/:token', (req, res) => {
 
 router.get('/authenticate/:token/:idEmployee', (req, res) => {
     const { token, idEmployee } = req.params
-    const validatedToken = validateToken(token, process.env.SECRET, idEmployee)
+    const validatedToken = validateToken(token, 'secret', idEmployee)
     res.send(validatedToken)
+})
+
+router.post('/generateToken', (req, res) => {
+    const data = req.body
+    const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, 'secret')
 })
 
 router.get('/checkRole/:id', authenticateToken, async (req, res) => {
