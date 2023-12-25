@@ -40,15 +40,11 @@ router.get('/getId/:id', authenticateToken, async (req, res) => {
 
 router.get('/getCpf/:cpf', async (req, res) => {
     const { cpf } = req.params
-    let student = await Student.findOne({
+    const student = await Student.findOne({
         where: {
             cpf: cpf
         }
     })
-    // res.send(student)
-
-    const token = generateToken({ cpf: student.cpf, name: student.firstName })
-    student.token = token
     res.send(student)
 })
 
