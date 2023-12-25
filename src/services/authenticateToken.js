@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
 
     if (token == null) { return res.status(401).send(false) }
 
-    jwt.verify(token, process.env.SECRET, (err, user) => {
+    jwt.verify(token, 'secret', (err, user) => {
         if (err) return res.status(403).json({ message: 'Error: ' + err })
 
         req.user = user
