@@ -35,7 +35,7 @@ sequelize.sync({
     //     const admin = await Employee.create({
     //         username: 'g.perazzo',
     //         password: password,
-    //         name: 'User 1',
+    //         name: 'Administrador',
     //         role: 'create-read-update-delete-log-permissions'
     //     })
     // })

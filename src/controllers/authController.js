@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs'
 import Employee from '../models/employee.js'
+import Log from '../models/log.js'
 import generateToken from '../services/generateToken.js'
 import validateToken from '../services/validateToken.js'
 import authenticateToken from '../services/authenticateToken.js'
@@ -40,6 +41,7 @@ router.post('/register', async (req, res) => {
     if (employees.length < 1) {
         password = await bcrypt.hash(password, 8)
         const employee = await Employee.create({ username, password, name })
+        employee ? await Log.create({ type: 'Cadastro Parceiro', description: `Realizado cadastro de ${employee.name}`, employeeId: employee.id }) : null
         const token = generateToken({ id: employee.id, username: employee.username, role: employee.role }, process.env.SECRET)
         res.send({ token: token, employee: employee })
     } else {

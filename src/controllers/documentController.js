@@ -2,6 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import authenticateToken from '../services/authenticateToken.js'
 import Document from '../models/document.js'
+import Log from '../models/log.js'
 
 const router = express.Router()
 const upload = multer()
@@ -59,7 +60,7 @@ router.post('/postAuth', authenticateToken, upload.single('pdf'), async (req, re
             employeeId: employeeId,
             document: buffer
         })
-
+        document ? await Log.create({ type: 'Cadastro Documento', description: `Realizado o cadastro do documento ${document.originalName} - ${document.docType}`, employeeId: employeeId }) : null
         res.json({ success: true, document })
     } catch (error) {
         console.error(error)
@@ -67,21 +68,12 @@ router.post('/postAuth', authenticateToken, upload.single('pdf'), async (req, re
     }
 })
 
-router.patch('/patchAuth/:id', authenticateToken, upload.single('pdf'), async (req, res) => {
-    const data = req.body
-    const { id } = req.params
-    const { buffer } = req.file
-    const document = await Document.findByPk(id)
-    document.set(data)
-    buffer ? document.buffer = buffer : null
-    await document.save()
-    res.send({ id: document.id, originalName: document.originalName, docType: document.docType })
-})
-
 router.delete('/deleteAuth/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
+    const data = req.body
     const document = await Document.findByPk(id)
-    await document.destroy()
+    const deleted = await document.destroy()
+    deleted ? await Log.create({ type: 'Deletar Documento', description: `Deletado o documento ${document.originalName} - ${document.docType}`, employeeId: data.employeeId }) : null
     res.send({ id: document.id, originalName: document.originalName, docType: document.docType })
 })
 
