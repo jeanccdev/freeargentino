@@ -17,7 +17,7 @@ router.get('/getAllDocumentsEmployee/:employeeId', authenticateToken, async (req
     documents.length > 0 ? res.status(200).send(documents) : res.status(404).send(false)
 })
 
-router.get('/getPublicStudentDocuments/:studentId', authenticateToken, async (req, res) => {
+router.get('/getPublicStudentDocuments/:studentId', async (req, res) => {
     const { studentId } = req.params
     const documents = await Document.findAll({
         where: {
