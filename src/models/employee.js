@@ -27,11 +27,7 @@ const employee = sequelize.define('employee', {
     },
     role: {
         type: DataTypes.STRING,
-        defaultValue: 'Common'
-    },
-    verified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        defaultValue: ''
     }
 })
 

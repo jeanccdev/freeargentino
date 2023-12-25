@@ -6,6 +6,16 @@ import authenticateToken from '../services/authenticateToken.js'
 
 const router = express.Router()
 
+router.get('/getAllStudentsEmployee/:employeeId', authenticateToken, async (req, res) => {
+    const { employeeId } = req.params
+    const students = await Student.findAll({
+        where: {
+            employeeId: employeeId
+        }
+    })
+    students.length > 0 ? res.status(200).send(students) : res.status(404).send(false)
+})
+
 router.get('/getAll', authenticateToken, async (req, res) => {
     const students = await Student.findAll()
     students.length > 0 ? res.status(200).send(students) : res.status(404).send(false)
@@ -17,7 +27,7 @@ router.get('/getOne/:id', authenticateToken, async (req, res) => {
     student ? res.status(200).send(student) : res.status(404).send(false)
 })
 
-router.get('/getId/:id', async (req, res) => {
+router.get('/getId/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const student = await Student.findOne({
         where: {
@@ -35,7 +45,7 @@ router.get('/getCpf/:cpf', async (req, res) => {
         }
     })
     if (student) {
-        const token = generateToken({ id: student.id, name: student.firstName }, process.env.SECRET, 60 * 60)
+        const token = generateToken({ id: student.id, name: student.firstName })
         res.status(200).send({ student: student, token: token })
     } else {
         res.status(404).send(false)

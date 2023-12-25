@@ -20,6 +20,10 @@ const document = sequelize.define('document', {
     document: {
         type: DataTypes.BLOB('long'),
         allowNull: false
+    },
+    courseId: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 

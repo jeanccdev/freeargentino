@@ -4,12 +4,22 @@ import authenticateToken from '../services/authenticateToken.js'
 
 const router = express.Router()
 
+router.get('/getAllCoursesEmployee/:employeeId', authenticateToken, async (req, res) => {
+    const { employeeId } = req.params
+    const courses = await Course.findAll({
+        where: {
+            employeeId: employeeId
+        }
+    })
+    courses.length > 0 ? res.status(200).send(courses) : res.status(404).send(false)
+})
+
 router.get('/getAll', authenticateToken, async (req, res) => {
     const courses = await Course.findAll()
     courses.length > 0 ? res.status(200).send(courses) : res.status(404).send({ message: 'No course found' })
 })
 
-router.get('/getCourses/:id', authenticateToken, async (req, res) => {
+router.get('/getCourses/:id', async (req, res) => {
     const { id } = req.params
     const courses = await Course.findAll({
         where: {
@@ -19,7 +29,7 @@ router.get('/getCourses/:id', authenticateToken, async (req, res) => {
     courses.length > 0 ? res.status(200).send(courses) : res.status(404).send(false)
 })
 
-router.get('/getOne/:id', authenticateToken, async (req, res) => {
+router.get('/getOne/:id', async (req, res) => {
     const { id } = req.params
     const course = await Course.findByPk(id)
     course ? res.status(200).send(course) : res.status(404).send({ message: 'Course not found' })
