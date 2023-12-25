@@ -45,6 +45,7 @@ router.get('/getCpf/:cpf', async (req, res) => {
             cpf: cpf
         }
     })
+    const token = generateToken({ cpf: student.cpf, name: student.firstName })
     res.send({ student: student, token: token })
 })
 
