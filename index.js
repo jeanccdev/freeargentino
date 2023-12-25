@@ -21,6 +21,14 @@ app.use(cors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }))
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://faetos.com.br");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    )
+    next()
+})
 
 // Controllers
 app.use('/api', routes)
@@ -28,17 +36,17 @@ app.all('*', (req, res) => res.send('Route undefined'))
 
 // Run
 sequelize.sync({
-    force: true
+    // force: true
 })
-    .then(async () => {
-        const password = await bcrypt.hash('Gian.123456', 8)
-        const admin = await Employee.create({
-            username: 'g.perazzo',
-            password: password,
-            name: 'Administrador',
-            role: 'create-read-update-delete-log-permissions'
-        })
-    })
+    // .then(async () => {
+    //     const password = await bcrypt.hash('Gian.123456', 8)
+    //     const admin = await Employee.create({
+    //         username: 'g.perazzo',
+    //         password: password,
+    //         name: 'Administrador',
+    //         role: 'create-read-update-delete-log-permissions'
+    //     })
+    // })
     .then(() => {
         app.listen(port, () => {
             console.clear()
