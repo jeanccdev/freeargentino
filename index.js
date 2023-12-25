@@ -17,7 +17,7 @@ const port = process.env.PORT
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: '*',
+    origin: 'https://faetos.com.br',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }))
@@ -28,17 +28,17 @@ app.all('*', (req, res) => res.send('Route undefined'))
 
 // Run
 sequelize.sync({
-    // force: true
+    force: true
 })
-    // .then(async () => {
-    //     const password = await bcrypt.hash('Gian.123456', 8)
-    //     const admin = await Employee.create({
-    //         username: 'g.perazzo',
-    //         password: password,
-    //         name: 'Administrador',
-    //         role: 'create-read-update-delete-log-permissions'
-    //     })
-    // })
+    .then(async () => {
+        const password = await bcrypt.hash('Gian.123456', 8)
+        const admin = await Employee.create({
+            username: 'g.perazzo',
+            password: password,
+            name: 'Administrador',
+            role: 'create-read-update-delete-log-permissions'
+        })
+    })
     .then(() => {
         app.listen(port, () => {
             console.clear()
