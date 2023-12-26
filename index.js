@@ -31,7 +31,7 @@ app.all('*', (req, res) => res.send('Route undefined'))
 sequelize.sync({
     // force: true
 })
-    // .then(async () => {
+    // .then(async () => { 
     //     const password = await bcrypt.hash('Gian.123456', 8)
     //     const admin = await Employee.create({
     //         username: 'g.perazzo',

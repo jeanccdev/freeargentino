@@ -27,7 +27,7 @@ router.get('/getPublicStudentDocuments/:studentId', async (req, res) => {
     documents.length > 0 ? res.status(200).send(documents) : res.status(404).send(false)
 })
 
-router.get('/getPublicCourseDocuments/:courseId', authenticateToken, async (req, res) => {
+router.get('/getPublicCourseDocuments/:courseId', async (req, res) => {
     const { courseId } = req.params
     const documents = await Document.findAll({
         where: {
@@ -37,7 +37,7 @@ router.get('/getPublicCourseDocuments/:courseId', authenticateToken, async (req,
     documents.length > 0 ? res.status(200).send(documents) : res.status(404).send(false)
 })
 
-router.get('/getPublicOne/:id', authenticateToken, async (req, res) => {
+router.get('/getPublicOne/:id', async (req, res) => {
     const { id } = req.params
     const document = await Document.findByPk(id)
     if (!document) {
