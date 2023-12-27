@@ -55,7 +55,7 @@ router.get('/getCpf/:cpf', async (req, res) => {
             cpf: cpf
         }
     })
-    student ? res.send(student) : res.send(false)
+    student ? res.send({ success: true, student: student }) : res.send({ success: false })
 })
 
 router.post('/insertOne', authenticateToken, async (req, res) => {
