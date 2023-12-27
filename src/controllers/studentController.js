@@ -61,9 +61,10 @@ router.get('/getCpf/:cpf', async (req, res) => {
 
 router.post('/insertOne', authenticateToken, async (req, res) => {
     let data = req.body
+    data.maxRegisterAmount = 0
     data.id = uuidv4()
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const student = await Student.create(data)
         await Employee.increment('registeredAmount', { by: 1, where: { id: data.employeeId } })
         student ? await Log.create({ type: 'Cadastrar Aluno', description: `Realizado o cadastro do aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
@@ -77,7 +78,7 @@ router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
     const { id } = req.params
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const student = await Student.findByPk(id)
         student.set(data)
         const updated = await student.save()
@@ -92,7 +93,7 @@ router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const data = req.body
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const student = await Student.findByPk(id)
         const deleted = await student.destroy()
         deleted ? await Log.create({ type: 'Deletar Aluno', description: `Deletado o aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null

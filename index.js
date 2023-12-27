@@ -28,9 +28,7 @@ app.use('/api', routes)
 app.all('*', (req, res) => res.send('Route undefined'))
 
 // Run
-sequelize.sync({
-    // force: true
-})
+sequelize.sync()
     // .then(async () => { 
     //     const password = await bcrypt.hash('Gian.123456', 8)
     //     await Employee.create({

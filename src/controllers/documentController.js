@@ -54,7 +54,7 @@ router.post('/postAuth', authenticateToken, upload.single('pdf'), async (req, re
         const { originalName, docType, studentId, courseId, employeeId } = req.body
         const { buffer } = req.file
         const employee = await Employee.findByPk(employeeId)
-        if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        if (employee.registeredAmount < employee.maxRegisterAmount) {
             const document = await Document.create({
                 originalName: originalName,
                 docType: docType,
@@ -78,7 +78,7 @@ router.delete('/deleteAuth/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const data = req.body
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const document = await Document.findByPk(id)
         const deleted = await document.destroy()
         deleted ? await Log.create({ type: 'Deletar Documento', description: `Deletado o documento ${document.originalName} - ${document.docType}`, employeeId: data.employeeId }) : null

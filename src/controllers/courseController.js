@@ -40,7 +40,7 @@ router.get('/getOne/:id', async (req, res) => {
 router.post('/insertOne', authenticateToken, async (req, res) => {
     const data = req.body
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const course = await Course.create(data)
         course ? await Log.create({ type: 'Cadastro Curso', description: `Realizado cadastro do curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
         course ? res.status(201).send(course) : res.status(400).send({ message: 'Course not created' })
@@ -53,7 +53,7 @@ router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
     const { id } = req.params
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const course = await Course.findByPk(id)
         course.set(data)
         const updated = await course.save()
@@ -69,7 +69,7 @@ router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
 
     const employee = await Employee.findByPk(data.employeeId)
-    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+    if (employee.registeredAmount < employee.maxRegisterAmount) {
         const course = await Course.findByPk(id)
         const deleted = await course.destroy()
         deleted ? await Log.create({ type: 'Deletar Curso', description: `Deletado o curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
