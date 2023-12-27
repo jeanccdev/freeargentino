@@ -28,6 +28,18 @@ const employee = sequelize.define('employee', {
     role: {
         type: DataTypes.STRING,
         defaultValue: ''
+    },
+    registeredAmount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    maxRegisterAmount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    admin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 })
 

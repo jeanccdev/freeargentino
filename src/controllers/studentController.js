@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import Student from '../models/student.js'
+import Employee from '../models/employee.js'
 import Log from '../models/log.js'
 import generateToken from '../services/generateToken.js'
 import express from 'express'
@@ -61,28 +62,44 @@ router.get('/getCpf/:cpf', async (req, res) => {
 router.post('/insertOne', authenticateToken, async (req, res) => {
     let data = req.body
     data.id = uuidv4()
-    const student = await Student.create(data)
-    student ? await Log.create({ type: 'Cadastrar Aluno', description: `Realizado o cadastro do aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
-    student ? res.status(201).send(student) : res.status(400).send(false)
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const student = await Student.create(data)
+        await Employee.increment('registeredAmount', { by: 1, where: { id: data.employeeId } })
+        student ? await Log.create({ type: 'Cadastrar Aluno', description: `Realizado o cadastro do aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
+        student ? res.status(201).send({ success: true, student: student }) : res.status(400).send({ success: false })
+    } else {
+        res.status(401).send({ success: false })
+    }
 })
 
 router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
     const { id } = req.params
-    const student = await Student.findByPk(id)
-    student.set(data)
-    const updated = await student.save()
-    updated ? await Log.create({ type: 'Atualizar Aluno', description: `Atualizado o aluno para ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
-    res.send(student)
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const student = await Student.findByPk(id)
+        student.set(data)
+        const updated = await student.save()
+        updated ? await Log.create({ type: 'Atualizar Aluno', description: `Atualizado o aluno para ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
+        updated ? res.status(201).send({ success: true, student: student }) : res.status(400).send({ success: false })
+    } else {
+        res.status(401).send({ success: false })
+    }
 })
 
 router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const data = req.body
-    const student = await Student.findByPk(id)
-    const deleted = await student.destroy()
-    deleted ? await Log.create({ type: 'Deletar Aluno', description: `Deletado o aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
-    res.send(student)
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const student = await Student.findByPk(id)
+        const deleted = await student.destroy()
+        deleted ? await Log.create({ type: 'Deletar Aluno', description: `Deletado o aluno ${student.firstName} ${student.lastName}`, employeeId: data.employeeId }) : null
+        deleted ? res.status(201).send({ success: true, student: student }) : res.status(400).send({ success: false })
+    } else {
+        res.status(401).send({ success: false })
+    }
 })
 
 export default router

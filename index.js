@@ -29,17 +29,19 @@ app.all('*', (req, res) => res.send('Route undefined'))
 
 // Run
 sequelize.sync({
-    // force: true
+    force: true
 })
-    // .then(async () => { 
-    //     const password = await bcrypt.hash('Gian.123456', 8)
-    //     const admin = await Employee.create({
-    //         username: 'g.perazzo',
-    //         password: password,
-    //         name: 'Administrador',
-    //         role: 'create-read-update-delete-log-permissions'
-    //     })
-    // })
+    .then(async () => { 
+        const password = await bcrypt.hash('Gian.123456', 8)
+        await Employee.create({
+            username: 'admin_faetos',
+            password: password,
+            name: 'Administrador',
+            role: 'create-read-update-delete-log-permissions',
+            maxRegisterAmount: 9999999999,
+            admin: true
+        })
+    })
     .then(() => {
         app.listen(port, () => {
             console.clear()

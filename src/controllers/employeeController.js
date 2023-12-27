@@ -26,6 +26,28 @@ router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     res.send(employee)
 })
 
+router.patch('/patchRegisterAmount/:id', authenticateToken, async (req, res) => {
+    const data = req.body
+    const { id } = req.params
+    if (data.type == 'add') {
+        const emp = await Employee.increment('maxRegisterAmount', {
+            by: data.amount,
+            where: {
+                id: id
+            }
+        })
+        emp ? res.status(200).send({ success: true, employee: emp }) : res.send(400).send({ success: false })
+    } else if (data.type == 'delete') {
+        const emp = await Employee.decrement('maxRegisterAmount', {
+            by: data.amount,
+            where: {
+                id: id
+            }
+        })
+        emp ? res.status(200).send({ success: true, employee: emp }) : res.send(400).send({ success: false })
+    }
+})
+
 router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const data = req.body

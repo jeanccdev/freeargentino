@@ -2,6 +2,7 @@ import Course from '../models/course.js'
 import express from 'express'
 import Log from '../models/log.js'
 import authenticateToken from '../services/authenticateToken.js'
+import Employee from '../models/employee.js'
 
 const router = express.Router()
 
@@ -38,32 +39,44 @@ router.get('/getOne/:id', async (req, res) => {
 
 router.post('/insertOne', authenticateToken, async (req, res) => {
     const data = req.body
-    const course = await Course.create(data)
-    if (course) {
-        await Log.create({ type: 'Cadastro Curso', description: `Realizado cadastro do curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId })
-        res.status(201).send(course)
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const course = await Course.create(data)
+        course ? await Log.create({ type: 'Cadastro Curso', description: `Realizado cadastro do curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
+        course ? res.status(201).send(course) : res.status(400).send({ message: 'Course not created' })
     } else {
-        res.status(400).send({ message: 'Course not created' })
+        res.status(401).send({ success: false })
     }
 })
 
 router.patch('/patchOne/:id', authenticateToken, async (req, res) => {
     const data = req.body
     const { id } = req.params
-    const course = await Course.findByPk(id)
-    course.set(data)
-    const updated = await course.save()
-    updated ? await Log.create({ type: 'Atualizar Curso', description: `Atualizado o curso para ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
-    res.send(course)
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const course = await Course.findByPk(id)
+        course.set(data)
+        const updated = await course.save()
+        updated ? await Log.create({ type: 'Atualizar Curso', description: `Atualizado o curso para ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
+        res.send(course)
+    } else {
+        res.status(401).send({ success: false })
+    }
 })
 
 router.delete('/deleteOne/:id', authenticateToken, async (req, res) => {
     const { id } = req.params
     const data = req.body
-    const course = await Course.findByPk(id)
-    const deleted = await course.destroy()
-    deleted ? await Log.create({ type: 'Deletar Curso', description: `Deletado o curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
-    res.send(course)
+
+    const employee = await Employee.findByPk(data.employeeId)
+    if (employee.registeredAmount < employee.maxRegisterAmount && employee.admin == true) {
+        const course = await Course.findByPk(id)
+        const deleted = await course.destroy()
+        deleted ? await Log.create({ type: 'Deletar Curso', description: `Deletado o curso ${course.category} - ${course.course} - ${course.classLoad} horas`, employeeId: data.employeeId }) : null
+        res.send(course)
+    } else {
+        res.status(401).send({ success: false })
+    }
 })
 
 export default router
