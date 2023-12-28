@@ -10,12 +10,18 @@ const router = express.Router()
 
 router.get('/getAllStudentsEmployee/:employeeId', authenticateToken, async (req, res) => {
     const { employeeId } = req.params
-    const students = await Student.findAll({
-        where: {
-            employeeId: employeeId
-        }
-    })
-    students.length > 0 ? res.status(200).send(students) : res.status(404).send(false)
+    const employee = await Employee.findByPk(employeeId)
+    if (employee.admin == true) {
+        const students = await Student.findAll()
+        students.length > 0 ? res.status(200).send(students) : res.status(404).send(false)
+    } else {
+        const students = await Student.findAll({
+            where: {
+                employeeId: employeeId
+            }
+        })
+        students.length > 0 ? res.status(200).send(students) : res.status(404).send(false)
+    }
 })
 
 router.get('/getAll', authenticateToken, async (req, res) => {
