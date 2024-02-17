@@ -4,14 +4,21 @@ import 'dotenv/config'
 import express from 'express'
 import sequelize from './db.js'
 import routes from './src/routes.js'
-import Employee from './src/models/employee.js'
-import bcrypt from 'bcryptjs'
-import Student from './src/models/student.js'
-import Course from './src/models/course.js'
+import fs from 'fs'
+import https from 'https'
+// import Employee from './src/models/employee.js'
+// import bcrypt from 'bcryptjs'
+// import Student from './src/models/student.js'
+// import Course from './src/models/course.js'
 
 // Inits
 const app = express()
 const port = process.env.PORT
+// const httpsOptions = {
+//     key: fs.readFileSync('/etc/letsencrypt/live/srv478386.hstgr.cloud/privkey.pem'),
+//     cert: fs.readFileSync('/etc/letsencrypt/live/srv478386.hstgr.cloud/fullchain.pem')
+// }
+// const server = https.createServer(httpsOptions, app)
 
 // Middlewares
 app.use(express.json())
@@ -46,4 +53,8 @@ sequelize.sync()
             console.clear()
             console.log(`Server running on http://localhost:${port}`)
         })
+        // server.listen(port, () => {
+        //     console.clear()
+        //     console.log(`Server running on port ${port}`)
+        // })
     })
